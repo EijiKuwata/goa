@@ -939,13 +939,10 @@ func buildPayloadData(e *httpdesign.EndpointExpr, sd *ServiceData) *PayloadData 
 				FieldName:   p.FieldName,
 				TypeName:    p.TypeName,
 				TypeRef:     p.TypeRef,
-				// special case for path params that are not
-				// pointers (because path params never are) but
-				// assigned to fields that are.
-				Pointer:  !p.Required && !p.Pointer && payload.IsPrimitivePointer(p.Name, true),
-				Required: p.Required,
-				Validate: p.Validate,
-				Example:  p.Example,
+				Pointer:     p.Pointer,
+				Required:    p.Required,
+				Validate:    p.Validate,
+				Example:     p.Example,
 			})
 		}
 		for _, p := range request.QueryParams {
@@ -955,6 +952,7 @@ func buildPayloadData(e *httpdesign.EndpointExpr, sd *ServiceData) *PayloadData 
 				FieldName: p.FieldName,
 				TypeName:  p.TypeName,
 				TypeRef:   p.TypeRef,
+				Pointer:   p.Pointer,
 				Required:  p.Required,
 				Validate:  p.Validate,
 				Example:   p.Example,
@@ -967,6 +965,7 @@ func buildPayloadData(e *httpdesign.EndpointExpr, sd *ServiceData) *PayloadData 
 				FieldName: h.FieldName,
 				TypeName:  h.TypeName,
 				TypeRef:   h.TypeRef,
+				Pointer:   h.Pointer,
 				Required:  h.Required,
 				Validate:  h.Validate,
 				Example:   h.Example,
@@ -983,6 +982,10 @@ func buildPayloadData(e *httpdesign.EndpointExpr, sd *ServiceData) *PayloadData 
 			for _, sc := range r.Schemes {
 				if sc.Type == "Basic" {
 					uatt := e.MethodExpr.Payload.Find(sc.UsernameAttr)
+					uref := svc.Scope.GoTypeRef(uatt)
+					if sc.UsernamePointer {
+						uref = "*" + uref
+					}
 					uarg := &InitArgData{
 						Name:        sc.UsernameAttr,
 						FieldName:   sc.UsernameField,
@@ -990,12 +993,16 @@ func buildPayloadData(e *httpdesign.EndpointExpr, sd *ServiceData) *PayloadData 
 						Ref:         sc.UsernameAttr,
 						Required:    sc.UsernameRequired,
 						TypeName:    svc.Scope.GoTypeName(uatt),
-						TypeRef:     svc.Scope.GoTypeRef(uatt),
+						TypeRef:     uref,
 						Pointer:     sc.UsernamePointer,
 						Validate:    codegen.RecursiveValidationCode(uatt, true, false, false, sc.UsernameAttr),
 						Example:     uatt.Example(design.Root.API.Random()),
 					}
 					patt := e.MethodExpr.Payload.Find(sc.PasswordAttr)
+					pref := svc.Scope.GoTypeRef(patt)
+					if sc.UsernamePointer {
+						pref = "*" + pref
+					}
 					parg := &InitArgData{
 						Name:        sc.PasswordAttr,
 						FieldName:   sc.PasswordField,
@@ -1003,7 +1010,7 @@ func buildPayloadData(e *httpdesign.EndpointExpr, sd *ServiceData) *PayloadData 
 						Ref:         sc.PasswordAttr,
 						Required:    sc.PasswordRequired,
 						TypeName:    svc.Scope.GoTypeName(patt),
-						TypeRef:     svc.Scope.GoTypeRef(patt),
+						TypeRef:     pref,
 						Pointer:     sc.PasswordPointer,
 						Validate:    codegen.RecursiveValidationCode(uatt, true, false, false, sc.PasswordAttr),
 						Example:     patt.Example(design.Root.API.Random()),
@@ -1610,9 +1617,13 @@ func extractPathParams(a *design.MappedAttributeExpr, serviceType *design.Attrib
 	var params []*ParamData
 	codegen.WalkMappedAttr(a, func(name, elem string, required bool, c *design.AttributeExpr) error {
 		var (
-			varn = codegen.Goify(name, false)
-			arr  = design.AsArray(c.Type)
+			varn    = codegen.Goify(name, false)
+			arr     = design.AsArray(c.Type)
+			typeRef = scope.GoTypeRef(c)
 		)
+		if a.IsPrimitivePointer(name, true) {
+			typeRef = "*" + typeRef
+		}
 		fieldName := codegen.Goify(name, true)
 		if !design.IsObject(serviceType.Type) {
 			fieldName = ""
@@ -1626,8 +1637,8 @@ func extractPathParams(a *design.MappedAttributeExpr, serviceType *design.Attrib
 			Required:       required,
 			Type:           c.Type,
 			TypeName:       scope.GoTypeName(c),
-			TypeRef:        scope.GoTypeRef(c),
-			Pointer:        false,
+			TypeRef:        typeRef,
+			Pointer:        a.IsPrimitivePointer(name, true),
 			Slice:          arr != nil,
 			StringSlice:    arr != nil && arr.ElemType.Type.Kind() == design.StringKind,
 			Map:            false,

@@ -150,7 +150,9 @@ func NewServiceMultipartWithParamsMethodMultipartWithParamsDecoder(mux goahttp.M
 
 				params = mux.Vars(r)
 			)
-			a = params["a"]
+			{
+				a = params["a"]
+			}
 			err = goa.MergeErrors(err, goa.ValidatePattern("a", a, "patterna"))
 			{
 				cRaw := r.URL.Query()

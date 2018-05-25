@@ -2511,11 +2511,14 @@ var PayloadPathStringDecodeCode = `// DecodeMethodPathStringRequest returns a de
 func DecodeMethodPathStringRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			p string
+			p *string
 
 			params = mux.Vars(r)
 		)
-		p = params["p"]
+		{
+			pRaw := params["p"]
+			p = &pRaw
+		}
 		payload := NewMethodPathStringMethodPathStringPayload(p)
 
 		return payload, nil
@@ -2533,7 +2536,9 @@ func DecodeMethodPathStringValidateRequest(mux goahttp.Muxer, decoder func(*http
 
 			params = mux.Vars(r)
 		)
-		p = params["p"]
+		{
+			p = params["p"]
+		}
 		if !(p == "val") {
 			err = goa.MergeErrors(err, goa.InvalidEnumValueError("p", p, []interface{}{"val"}))
 		}
@@ -2614,7 +2619,9 @@ func DecodeMethodPathPrimitiveStringValidateRequest(mux goahttp.Muxer, decoder f
 
 			params = mux.Vars(r)
 		)
-		p = params["p"]
+		{
+			p = params["p"]
+		}
 		if !(p == "val") {
 			err = goa.MergeErrors(err, goa.InvalidEnumValueError("p", p, []interface{}{"val"}))
 		}
@@ -3665,11 +3672,14 @@ func DecodeMethodBodyPathObjectRequest(mux goahttp.Muxer, decoder func(*http.Req
 		}
 
 		var (
-			b string
+			b *string
 
 			params = mux.Vars(r)
 		)
-		b = params["b"]
+		{
+			bRaw := params["b"]
+			b = &bRaw
+		}
 		payload := NewMethodBodyPathObjectMethodBodyPathObjectPayload(&body, b)
 
 		return payload, nil
@@ -3703,7 +3713,9 @@ func DecodeMethodBodyPathObjectValidateRequest(mux goahttp.Muxer, decoder func(*
 
 			params = mux.Vars(r)
 		)
-		b = params["b"]
+		{
+			b = params["b"]
+		}
 		err = goa.MergeErrors(err, goa.ValidatePattern("b", b, "patternb"))
 		if err != nil {
 			return nil, err
@@ -3732,11 +3744,14 @@ func DecodeMethodBodyPathUserRequest(mux goahttp.Muxer, decoder func(*http.Reque
 		}
 
 		var (
-			b string
+			b *string
 
 			params = mux.Vars(r)
 		)
-		b = params["b"]
+		{
+			bRaw := params["b"]
+			b = &bRaw
+		}
 		payload := NewMethodBodyPathUserPayloadType(&body, b)
 
 		return payload, nil
@@ -3769,7 +3784,9 @@ func DecodeMethodUserBodyPathValidateRequest(mux goahttp.Muxer, decoder func(*ht
 
 			params = mux.Vars(r)
 		)
-		b = params["b"]
+		{
+			b = params["b"]
+		}
 		err = goa.MergeErrors(err, goa.ValidatePattern("b", b, "patternb"))
 		if err != nil {
 			return nil, err
@@ -3798,12 +3815,15 @@ func DecodeMethodBodyQueryPathObjectRequest(mux goahttp.Muxer, decoder func(*htt
 		}
 
 		var (
-			c string
+			c *string
 			b *string
 
 			params = mux.Vars(r)
 		)
-		c = params["c"]
+		{
+			cRaw := params["c"]
+			c = &cRaw
+		}
 		bRaw := r.URL.Query().Get("b")
 		if bRaw != "" {
 			b = &bRaw
@@ -3842,7 +3862,9 @@ func DecodeMethodBodyQueryPathObjectValidateRequest(mux goahttp.Muxer, decoder f
 
 			params = mux.Vars(r)
 		)
-		c = params["c"]
+		{
+			c = params["c"]
+		}
 		err = goa.MergeErrors(err, goa.ValidatePattern("c", c, "patternc"))
 		b = r.URL.Query().Get("b")
 		if b == "" {
@@ -3876,12 +3898,15 @@ func DecodeMethodBodyQueryPathUserRequest(mux goahttp.Muxer, decoder func(*http.
 		}
 
 		var (
-			c string
+			c *string
 			b *string
 
 			params = mux.Vars(r)
 		)
-		c = params["c"]
+		{
+			cRaw := params["c"]
+			c = &cRaw
+		}
 		bRaw := r.URL.Query().Get("b")
 		if bRaw != "" {
 			b = &bRaw
@@ -3920,7 +3945,9 @@ func DecodeMethodBodyQueryPathUserValidateRequest(mux goahttp.Muxer, decoder fun
 
 			params = mux.Vars(r)
 		)
-		c = params["c"]
+		{
+			c = params["c"]
+		}
 		err = goa.MergeErrors(err, goa.ValidatePattern("c", c, "patternc"))
 		b = r.URL.Query().Get("b")
 		if b == "" {
@@ -4028,7 +4055,9 @@ func DecodeMethodMapQueryObjectRequest(mux goahttp.Muxer, decoder func(*http.Req
 
 			params = mux.Vars(r)
 		)
-		a = params["a"]
+		{
+			a = params["a"]
+		}
 		err = goa.MergeErrors(err, goa.ValidatePattern("a", a, "patterna"))
 		{
 			cRaw := r.URL.Query()

@@ -56,7 +56,9 @@ func DecodeShowRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.De
 
 			params = mux.Vars(r)
 		)
-		id = params["id"]
+		{
+			id = params["id"]
+		}
 		viewRaw := r.URL.Query().Get("view")
 		if viewRaw != "" {
 			view = &viewRaw
@@ -153,7 +155,9 @@ func DecodeRemoveRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.
 
 			params = mux.Vars(r)
 		)
-		id = params["id"]
+		{
+			id = params["id"]
+		}
 		payload := NewRemoveRemovePayload(id)
 
 		return payload, nil

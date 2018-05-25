@@ -617,9 +617,9 @@ func NewMethodQueryStringMappedMethodQueryStringMappedPayload(query *string) *se
 
 var PayloadPathStringConstructorCode = `// NewMethodPathStringMethodPathStringPayload builds a ServicePathString
 // service MethodPathString endpoint payload.
-func NewMethodPathStringMethodPathStringPayload(p string) *servicepathstring.MethodPathStringPayload {
+func NewMethodPathStringMethodPathStringPayload(p *string) *servicepathstring.MethodPathStringPayload {
 	return &servicepathstring.MethodPathStringPayload{
-		P: &p,
+		P: p,
 	}
 }
 `
@@ -738,11 +738,11 @@ func NewMethodBodyQueryUserValidatePayloadType(body *MethodBodyQueryUserValidate
 
 var PayloadBodyPathObjectConstructorCode = `// NewMethodBodyPathObjectMethodBodyPathObjectPayload builds a
 // ServiceBodyPathObject service MethodBodyPathObject endpoint payload.
-func NewMethodBodyPathObjectMethodBodyPathObjectPayload(body *MethodBodyPathObjectRequestBody, b string) *servicebodypathobject.MethodBodyPathObjectPayload {
+func NewMethodBodyPathObjectMethodBodyPathObjectPayload(body *MethodBodyPathObjectRequestBody, b *string) *servicebodypathobject.MethodBodyPathObjectPayload {
 	v := &servicebodypathobject.MethodBodyPathObjectPayload{
 		A: body.A,
 	}
-	v.B = &b
+	v.B = b
 	return v
 }
 `
@@ -761,11 +761,11 @@ func NewMethodBodyPathObjectValidateMethodBodyPathObjectValidatePayload(body *Me
 
 var PayloadBodyPathUserConstructorCode = `// NewMethodBodyPathUserPayloadType builds a ServiceBodyPathUser service
 // MethodBodyPathUser endpoint payload.
-func NewMethodBodyPathUserPayloadType(body *MethodBodyPathUserRequestBody, b string) *servicebodypathuser.PayloadType {
+func NewMethodBodyPathUserPayloadType(body *MethodBodyPathUserRequestBody, b *string) *servicebodypathuser.PayloadType {
 	v := &servicebodypathuser.PayloadType{
 		A: body.A,
 	}
-	v.B = &b
+	v.B = b
 	return v
 }
 `
@@ -785,11 +785,11 @@ func NewMethodUserBodyPathValidatePayloadType(body *MethodUserBodyPathValidateRe
 var PayloadBodyQueryPathObjectConstructorCode = `// NewMethodBodyQueryPathObjectMethodBodyQueryPathObjectPayload builds a
 // ServiceBodyQueryPathObject service MethodBodyQueryPathObject endpoint
 // payload.
-func NewMethodBodyQueryPathObjectMethodBodyQueryPathObjectPayload(body *MethodBodyQueryPathObjectRequestBody, c string, b *string) *servicebodyquerypathobject.MethodBodyQueryPathObjectPayload {
+func NewMethodBodyQueryPathObjectMethodBodyQueryPathObjectPayload(body *MethodBodyQueryPathObjectRequestBody, c *string, b *string) *servicebodyquerypathobject.MethodBodyQueryPathObjectPayload {
 	v := &servicebodyquerypathobject.MethodBodyQueryPathObjectPayload{
 		A: body.A,
 	}
-	v.C = &c
+	v.C = c
 	v.B = b
 	return v
 }
@@ -810,11 +810,11 @@ func NewMethodBodyQueryPathObjectValidateMethodBodyQueryPathObjectValidatePayloa
 
 var PayloadBodyQueryPathUserConstructorCode = `// NewMethodBodyQueryPathUserPayloadType builds a ServiceBodyQueryPathUser
 // service MethodBodyQueryPathUser endpoint payload.
-func NewMethodBodyQueryPathUserPayloadType(body *MethodBodyQueryPathUserRequestBody, c string, b *string) *servicebodyquerypathuser.PayloadType {
+func NewMethodBodyQueryPathUserPayloadType(body *MethodBodyQueryPathUserRequestBody, c *string, b *string) *servicebodyquerypathuser.PayloadType {
 	v := &servicebodyquerypathuser.PayloadType{
 		A: body.A,
 	}
-	v.C = &c
+	v.C = c
 	v.B = b
 	return v
 }

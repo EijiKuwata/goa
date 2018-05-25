@@ -462,19 +462,22 @@ const requestParamsHeadersT = `{{- define "request_params_headers" }}
 		)
 
 {{- range .PathParams }}
-	{{- if and (or (eq .Type.Name "string") (eq .Type.Name "any")) }}
-		{{ .VarName }} = params["{{ .Name }}"]
-
-	{{- else }}{{/* not string and not any */}}
-		{
+	{
+		{{- if or (eq .Type.Name "string") (eq .Type.Name "any") }}
+			{{- if .Required }}
+				{{ .VarName }} = params["{{ .Name }}"]
+			{{- else }}
+				{{ .VarName }}Raw := params["{{ .Name }}"]
+				{{ .VarName }} = {{ if and (eq .Type.Name "string") .Pointer }}&{{ end }}{{ .VarName }}Raw
+			{{- end }}
+		{{- else }}
 			{{ .VarName }}Raw := params["{{ .Name }}"]
 			{{- template "path_conversion" . }}
-		}
-
-	{{- end }}
-		{{- if .Validate }}
-		{{ .Validate }}
 		{{- end }}
+	}
+	{{- if .Validate }}
+	{{ .Validate }}
+	{{- end }}
 {{- end }}
 
 {{- range .QueryParams }}
@@ -1128,7 +1131,7 @@ func {{ .InitName }}(mux goahttp.Muxer, {{ .VarName }} {{ .FuncName }}) func(r *
 			{{- if .Payload.Request.PayloadInit }}
 				{{- range .Payload.Request.PayloadInit.ServerArgs }}
 					{{- if .FieldName }}
-			(*p).{{ .FieldName }} = {{ if .Pointer }}&{{ end }}{{ .Name }}
+			(*p).{{ .FieldName }} = {{ .Name }}
 					{{- end }}
 				{{- end }}
 			{{- end }}

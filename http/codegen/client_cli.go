@@ -476,7 +476,7 @@ func fieldLoadCode(actual, fType string, arg *InitArgData) (string, bool) {
 		}
 		if arg.TypeName == stringN {
 			var ref string
-			if !arg.Required {
+			if arg.Pointer {
 				ref = "&"
 			}
 			code = arg.Name + " = " + ref + actual
@@ -765,7 +765,7 @@ func {{ .Name }}({{ range .FormalParams }}{{ . }} string, {{ end }}) ({{ .Result
 	{{- end }}
 	{{- range .Fields }}
 		{{- if .VarName }}
-	var {{ .VarName }} {{ if .Pointer }}*{{ end }}{{ .TypeName }}
+	var {{ .VarName }} {{ .TypeName }}
 	{
 		{{ .Init }}
 	}
